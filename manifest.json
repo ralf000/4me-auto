@@ -1,0 +1,60 @@
+{
+  "name": "4me auto",
+  "description": "Авторегистрация обращений/инцидентов в системе 4me",
+  "version": "0.2",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://sc-tech-solutions.4me.mos.ru/*"
+      ],
+      "js": [
+        "vendors/jquery.min.js",
+        "objects/STORAGE.js",
+        "objects/MESSAGES.js",
+        "objects/LOGGER.js",
+        "objects/LIB.js",
+        "objects/LAYER.js",
+        "objects/TASKS.js",
+        "objects/CLEANER.js",
+        "objects/SENDER.js",
+        "objects/DATA.js"
+      ],
+      "css": [],
+      "all_frames": true
+    }
+  ],
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://sc-tech-solutions.4me.mos.ru/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "style.css",
+        "data/*.json",
+        "vendors/*"
+      ],
+      "matches": [
+        "https://sc-tech-solutions.4me.mos.ru/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "4me auto",
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "externally_connectable": {
+    "matches": ["https://sc-tech-solutions.4me.mos.ru/*"]
+  }
+}
