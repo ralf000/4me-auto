@@ -4,6 +4,10 @@ async function getParam(name, defaultValue) {
     return result[name] || defaultValue;
 }
 
+function setParam(data) {
+    chrome.storage.sync.set(data);
+}
+
 function executeAutoReg(tab) {
     chrome.scripting.executeScript({
         target: {tabId: tab, allFrames: true},
@@ -24,6 +28,9 @@ chrome.runtime.onMessage.addListener(
                 setTimeout(() => executeAutoReg(tab), 3000);
             });
             return;
+        }
+        if (status === 'logs') {
+            setParam({command: 'logs'});
         }
         //for other cases
         await executeAutoReg(tab);

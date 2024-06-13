@@ -17,9 +17,9 @@ const LIB = {
     wait({callback, max = this.DELAY * 15, delay = this.DELAY, name = 'waiting'}) {
         return new Promise((resolve, reject) => {
             let timeCounter = 0;
-            const counter = counterIdGetter => setInterval(() => {
+            const counter = counterIdGetter => setInterval(async () => {
                 const counterId = counterIdGetter();
-                if (callback()) {
+                if (await callback()) {
                     clearInterval(counterId);
                     return resolve(true)
                 }

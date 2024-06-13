@@ -252,10 +252,9 @@ hr {
     display: none;
 }
 
-[data-target] {
-    display: block;
-    text-align: right;
-    padding: 3px 7px;
+[data-target], #logs-block > a {
+    display: inline-block;
+    padding: 7px;
     color: #333;
     text-decoration: none;
 }
@@ -274,4 +273,16 @@ label {
 
 .levels-block, #settings {
     margin-top: 5px;
+}
+
+#logs-block {
+    float: left;
+}
+
+#settings {
+    clear: both;
+}
+
+#settings-link-block {
+    float: right;
 }

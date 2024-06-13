@@ -89,6 +89,11 @@ const POPUP = {
             this.setParam({tgIncidentChatId: value});
             $(e.currentTarget).css({'background-color': 'green'})
         });
+
+        $('.download-logs').on('click', async e => {
+            e.preventDefault();
+            await this.sendMessage({status: 'logs'})
+        });
     },
 
     async setAutoRegStatus() {

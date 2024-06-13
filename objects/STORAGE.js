@@ -2,9 +2,12 @@ const STORAGE = {
     setParam(data) {
         chrome.storage.sync.set(data);
     },
-    async getParam(name, defaultValue) {
+    async getParam(name, defaultValue, remove) {
         defaultValue = defaultValue || null;
         const result = await chrome.storage.sync.get(name);
+        if (remove) {
+            this.removeParam(name);
+        }
         return result[name] || defaultValue;
     },
     removeParam(name) {
@@ -13,8 +16,10 @@ const STORAGE = {
     setSessionParam(data) {
         chrome.storage.session.set(data);
     },
-    getSessionParam(name) {
-        return chrome.storage.session.get(name);
+    async getSessionParam(name, defaultValue) {
+        defaultValue = defaultValue || null;
+        const result = await chrome.storage.session.get(name);
+        return result[name] || defaultValue;
     },
     removeSessionParam(name) {
         chrome.storage.session.remove(name);

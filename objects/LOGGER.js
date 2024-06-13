@@ -15,10 +15,24 @@ const LOGGER = {
         } else {
             logs = [{date, message}]
         }
-        STORAGE.setSessionParam({logs: logs});
+        STORAGE.setSessionParam({logs});
     },
 
     all() {
         return STORAGE.getSessionParam('logs', []);
+    },
+
+    async download() {
+        let logs = await this.all();
+        let text = '';
+        for (let key in logs) {
+            text += `${logs[key].date} | ${logs[key].message}\n`;
+        }
+        const blob = new Blob([text], {type: 'text/plain'});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `4me-auto-logs-${new Date().toLocaleDateString()}${new Date().toLocaleTimeString()}.txt`;
+        link.click();
+        URL.revokeObjectURL(link.href);
     }
 };

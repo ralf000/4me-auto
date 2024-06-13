@@ -15,26 +15,18 @@ const TASKS = {
         return $('#view_list_container');
     },
 
-    new(filtered) {
+    async new(filtered) {
         filtered = filtered || true;
-        return TASKS.all().filter(this.isNewFilter)
-    },
-
-    isNew(task) {
-        return $(task).find('.cell-status').text().trim() === TASKS.STATUS_NEW
-    },
-
-    /**
-     * find new tasks in list according to settings
-     */
-    async isNewFilter(i, task) {
-        const number = this.getNumber(task);
         const savingAttempts = await STORAGE.getParam('savingAttempts', {});
-        //фильтруем талоны с превышенным количеством попыток их сохранить
+        return TASKS.all().filter((i, task) => this.isNew(task, savingAttempts))
+    },
+
+    isNew(task, savingAttempts) {
+        const number = this.getNumber(task);
         if (savingAttempts && savingAttempts[number] && savingAttempts[number] >= this.MAX_SAVING_ATTEMPTS) {
             return false;
         }
-        return this.isNew(task);
+        return this.getStatus(task) === TASKS.STATUS_NEW
     },
 
     async handleSavingAttempts(number) {
@@ -74,11 +66,12 @@ const TASKS = {
         if (task) {
             return $(task).find('.cell-subject').text().trim();
         }
-        return TASKS.getTaskHeaderData('Запрос');
+        return TASKS.getTaskBlock().find('.title').text().trim();
     },
 
-    isNewOpenedTask() {
-        return TASKS.getStatus() === TASKS.STATUS_NEW;
+    async isNewOpenedTask() {
+        const savingAttempts = await STORAGE.getParam('savingAttempts', {});
+        return TASKS.isNew(null, savingAttempts);
     },
 
     isAppliedTask() {
@@ -93,12 +86,14 @@ const TASKS = {
         return TASKS.getStatus();
     },
 
-    hasNew() {
-        return TASKS.new().length;
+    async hasNew() {
+        const tasks = await TASKS.new();
+        return tasks.length;
     },
 
-    getFirstNew() {
-        return TASKS.new().first();
+    async getFirstNew() {
+        const tasks = await TASKS.new();
+        return tasks.first();
     },
 
     setType() {
