@@ -1,7 +1,7 @@
 {
   "name": "4me auto",
   "description": "Авторегистрация обращений/инцидентов в системе 4me",
-  "version": "0.2",
+  "version": "0.7",
   "content_scripts": [
     {
       "matches": [

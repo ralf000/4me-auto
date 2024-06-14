@@ -26,7 +26,6 @@ const SENDER = {
     },
 
     async send(message, successCallback, errorCallback) {
-        console.log(message);
         $.ajax({
             url: await this.getTelegramUrl(),
             type: "POST",

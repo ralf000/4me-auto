@@ -34,7 +34,7 @@ AUTOREG = {
                 return MESSAGES.send({status: 'restart'});
             }
             LOGGER.log(`Нажимаю кнопку "Зарегистрировать" для обращения ${number}`);
-            // TASKS.getApplyButton().click();
+            TASKS.getApplyButton().click();
             LOGGER.log(`Жду регистрации обращения ${number}`);
             await LIB.wait({callback: TASKS.isAppliedTask, name: 'appliedTask'});
             await SENDER.sendNewTaskNotification(number);
@@ -63,9 +63,9 @@ AUTOREG = {
                 if (!hasNew) LOGGER.log(message);
                 return hasNew;
             },
-            delay: 1000 * 2,
-            max: 1000 * 6 * 60
-        })//30min
+            delay: 1000 * 60,
+            max: 1000 * 60 * 20
+        })
         LOGGER.log('Нет новых обращений. Запускаю рестарт');
         await MESSAGES.send({status: 'restart'});
     },
