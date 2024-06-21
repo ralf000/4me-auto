@@ -26,6 +26,9 @@ const TASKS = {
         if (savingAttempts && savingAttempts[number] && savingAttempts[number] >= this.MAX_SAVING_ATTEMPTS) {
             return false;
         }
+        if (task && LIB.isAIS()) {
+            return this.hasNewAISUIDTasks(task);
+        }
         return this.getStatus(task) === TASKS.STATUS_NEW
     },
 
@@ -55,9 +58,14 @@ const TASKS = {
         return TASKS.getTaskHeaderData('Статус');
     },
 
+    hasNewAISUIDTasks(task) {
+        return $(task).find('.status_about_due').length;
+    },
+
     getNumber(task) {
         if (task) {
-            return $(task).find('.cell-path').text().trim().match(/^\d+/)[0];
+            task = LIB.isAIS() ? $(task).find('.cell-identifier').text().trim() : $(task).find('.cell-path').text().trim();
+            return task[0];
         }
         return TASKS.getTaskHeaderData('Запрос');
     },

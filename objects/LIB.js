@@ -1,6 +1,10 @@
 const LIB = {
     DELAY: 1000,
 
+    isAIS() {
+        return TASKS.tasksBlock().find('.cell-identifier').length;
+    },
+
     async handleCounters(name, counter, type) {
         type = type || 'timeout';
         let counters = await STORAGE.getParam('counters', {});

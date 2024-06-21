@@ -54,18 +54,26 @@ AUTOREG = {
         return MESSAGES.send({status: 'restart'});
     },
 
+    async checkNewTasks(message) {
+        const hasNew = await TASKS.hasNew();
+        if (!hasNew) LOGGER.log(message);
+        return hasNew;
+    },
+
+    async checkAISUIDNewTasks() {
+        return true;
+    },
+
     async findNewTasks() {
         const message = 'Нет новых обращений. Продолжаю наблюдение ಠ_ಠ';
         LOGGER.log(message);
+        //если это АИС, то просто обновляем страницу (новые обращения/инциденты сами не появляются)
+        //иначе проверяем наличие без перезагрузки через интервал времени
         await LIB.wait({
-            callback: async () => {
-                const hasNew = await TASKS.hasNew();
-                if (!hasNew) LOGGER.log(message);
-                return hasNew;
-            },
+            callback: async () => LIB.isAIS() ? this.checkAISUIDNewTasks() : this.checkNewTasks(message),
             delay: 1000 * 60,
             max: 1000 * 60 * 20
-        })
+        });
         LOGGER.log('Нет новых обращений. Запускаю рестарт');
         await MESSAGES.send({status: 'restart'});
     },
@@ -90,6 +98,7 @@ AUTOREG = {
 };
 
 try {
+    LOGGER.log('Старт');
     AUTOREG.run();
 } catch (e) {
     typeof LOGGER === 'undefined' ? console.error(e) : LOGGER.log(e);
