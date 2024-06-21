@@ -26,8 +26,6 @@ chrome.runtime.onMessage.addListener(
         if (status === 'restart') {
             chrome.tabs.reload(tab, () => {
                 chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
-                    console.log(info);
-                    console.log(tab);
                     if (info.status === 'complete' && tabId === tab) {
                         chrome.tabs.onUpdated.removeListener(listener);
                         setTimeout(() => executeAutoReg(tab), 1000);
