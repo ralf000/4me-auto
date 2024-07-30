@@ -18,15 +18,16 @@ const TASKS = {
     async new(filtered) {
         filtered = filtered || true;
         const savingAttempts = await STORAGE.getParam('savingAttempts', {});
-        return TASKS.all().filter((i, task) => this.isNew(task, savingAttempts))
+        const isAIS = LIB.isAIS();
+        return TASKS.all().filter((i, task) => this.isNew(task, savingAttempts, isAIS))
     },
 
-    isNew(task, savingAttempts) {
-        const number = this.getNumber(task);
+    isNew(task, savingAttempts, isAIS) {
+        const number = this.getNumber(task, isAIS);
         if (savingAttempts && savingAttempts[number] && savingAttempts[number] >= this.MAX_SAVING_ATTEMPTS) {
             return false;
         }
-        if (task && LIB.isAIS()) {
+        if (task && isAIS) {
             return this.hasNewAISUIDTasks(task);
         }
         return this.getStatus(task) === TASKS.STATUS_NEW
@@ -62,9 +63,9 @@ const TASKS = {
         return $(task).find('.status_about_due').length;
     },
 
-    getNumber(task) {
+    getNumber(task, isAIS) {
         if (task) {
-            task = LIB.isAIS() ? $(task).find('.cell-identifier').text().trim() : $(task).find('.cell-path').text().trim();
+            task = isAIS ? $(task).find('.cell-identifier').text().trim() : $(task).find('.cell-path').text().trim();
             return task[0];
         }
         return TASKS.getTaskHeaderData('Запрос');
@@ -79,7 +80,7 @@ const TASKS = {
 
     async isNewOpenedTask() {
         const savingAttempts = await STORAGE.getParam('savingAttempts', {});
-        return TASKS.isNew(null, savingAttempts);
+        return TASKS.isNew(null, savingAttempts, LIB.isAIS());
     },
 
     isAppliedTask() {

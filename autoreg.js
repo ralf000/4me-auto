@@ -43,7 +43,7 @@ AUTOREG = {
         LOGGER.log('Получаю первое новое обращение');
         const newTask = await TASKS.getFirstNew();
         if (newTask.length) {
-            const number = TASKS.getNumber(newTask);
+            const number = TASKS.getNumber(newTask, LIB.isAIS());
             LOGGER.log(`Нажимаю на обращение ${number}`);
             newTask.click();
             LOGGER.log(`Жду открытия обращения ${number}`);
