@@ -2,7 +2,7 @@ const LIB = {
     DELAY: 1000,
 
     isAIS() {
-        return TASKS.tasksBlock().find('.cell-team:contains("АИС УИД")').length;
+        return TASKS.tasksBlock().find('.cell-team:contains("АИС УИД")').length > 0;
     },
 
     async handleCounters(name, counter, type) {

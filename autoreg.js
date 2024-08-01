@@ -27,6 +27,12 @@ AUTOREG = {
         LOGGER.log('Есть новые обращения');
         if (await TASKS.isNewOpenedTask()) {
             const number = TASKS.getTaskHeaderData('Запрос');
+            if (!TASKS.canBeRegistered()) {
+                LOGGER.log(`Обращение ${number} не может быть зарегистрировано. Кнопка "Зарегистрировать" отключена`);
+                await TASKS.handleSavingAttempts(number, true);
+                LOGGER.log(`Обращение ${number} исключено из наблюдения`);
+                return MESSAGES.send({status: 'restart'});
+            }
             LOGGER.log(`Новое обращение ${number} открыто`);
             if (!await TASKS.handleSavingAttempts(number)) {
                 LOGGER.log(`Превышено количество попыток сохранения ${TASKS.isAppeal() ? 'обращения' : 'инцидента'} ${number}`);

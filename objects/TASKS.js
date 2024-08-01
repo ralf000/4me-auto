@@ -33,9 +33,11 @@ const TASKS = {
         return this.getStatus(task) === TASKS.STATUS_NEW
     },
 
-    async handleSavingAttempts(number) {
+    async handleSavingAttempts(number, excludeTask) {
         const savingAttempts = await STORAGE.getParam('savingAttempts', {});
-        if (savingAttempts[number]) {
+        if (excludeTask) {
+            savingAttempts[number] = this.MAX_SAVING_ATTEMPTS;
+        } else if (savingAttempts[number]) {
             savingAttempts[number]++;
         } else {
             savingAttempts[number] = 1;
@@ -60,13 +62,17 @@ const TASKS = {
     },
 
     hasNewAISUIDTasks(task) {
-        return $(task).find('.status_about_due').length;
+        return $(task).find('.status_about_due').length
+            || (this.getStatus(task) === TASKS.STATUS_NEW && $(task).find('.cell-target').first().text().indexOf('Завтра') === 0);
     },
 
     getNumber(task, isAIS) {
         if (task) {
-            task = isAIS ? $(task).find('.cell-identifier').text().trim() : $(task).find('.cell-path').text().trim();
-            return task[0];
+            if (isAIS) {
+                const numberParts = $(task).find('.cell-identifier').text().match(/\d+/);
+                return numberParts[0] || '';
+            }
+            return $(task).find('.cell-path').text().trim();
         }
         return TASKS.getTaskHeaderData('Запрос');
     },
@@ -81,6 +87,10 @@ const TASKS = {
     async isNewOpenedTask() {
         const savingAttempts = await STORAGE.getParam('savingAttempts', {});
         return TASKS.isNew(null, savingAttempts, LIB.isAIS());
+    },
+
+    canBeRegistered() {
+        return !TASKS.getTaskBlock().find('#toolbar_start').hasClass('disabled');
     },
 
     isAppliedTask() {
